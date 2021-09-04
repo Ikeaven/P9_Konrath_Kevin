@@ -12,6 +12,9 @@ class Ticket(models.Model):
     image = models.ImageField(blank=True, null=True)
     time_created = models.DateTimeField(auto_now_add=True)
 
+    def __str__(self) -> str:
+        return self.title
+
 
 class Review(models.Model):
     ticket = models.ForeignKey(to=Ticket, on_delete=models.CASCADE)

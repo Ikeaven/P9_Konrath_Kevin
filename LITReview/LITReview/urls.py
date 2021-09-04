@@ -18,6 +18,6 @@ from django.urls import path
 from django.urls.conf import include
 
 urlpatterns = [
-    path('accueil/', include('accueil.urls')),
+    path('flux/', include('flux.urls')),
     path('admin/', admin.site.urls),
 ]
