@@ -1,0 +1,35 @@
+{% extends "accueil/base_generic.html" %}
+
+
+{% block content %}
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-6">
+                <h3>Inscivez-vous maintenant</h3>
+                <a class="btn btn-primary mt-5" href="/inscription" role="button">S'inscrire</a>
+            </div>
+            <div class="col-6">
+                <h3>Connectez-vous</h3>
+                <div class="mb-3">
+                <form class="form" action="{% url 'connexion' %}" method="post">
+                {% csrf_token %}
+                    <label for="" class="form-label"></label>
+
+                        <div class="mb-3">
+                        <label for="name" class="form-label">Nom d'utilisateur</label>
+                        <input type="text" class="form-control" name="name" id="name" aria-describedby="helpId">
+                        <small id="helpId" class="form-text text-muted">le nom d'utilisateur doit être unique</small>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Mot de passe</label>
+                        <input type="password" class="form-control" name="password" id="password" placeholder="">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Envoyer</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

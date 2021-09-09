@@ -18,6 +18,9 @@ from django.urls import path
 from django.urls.conf import include
 
 urlpatterns = [
+    path('', include('accueil.urls')),
+    path('inscription/', include('accueil.urls')),
+    path('connexion/', include('accueil.urls')),
     path('flux/', include('flux.urls')),
     path('admin/', admin.site.urls),
 ]

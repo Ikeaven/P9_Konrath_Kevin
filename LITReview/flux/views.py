@@ -1,6 +1,10 @@
-# from django.shortcuts import render
-from django.http import HttpResponse
+from django.shortcuts import render
+# from django.http import HttpResponse
 # Create your views here.
+from .models import Ticket
+
 
 def index(request):
-    return HttpResponse("Hello, world. You're at the flux index.")
+    tickets = Ticket.objects.all()
+    context = {'tickets' : tickets}
+    return render(request, 'flux/index.html', context)

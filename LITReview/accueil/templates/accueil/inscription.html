@@ -1,0 +1,37 @@
+{% extends "accueil/base_generic.html" %}
+
+{% block content %}
+
+
+<div class="container">
+    <div class="row justify-content-around">
+        <div class="col-12">
+            <h3>Inscrivez-vous</h3>
+
+            <form class="form" action="{% url 'inscription' %}" method="post">
+                {% csrf_token %}
+                <div class="m-3">
+                <label for="username" class="form-label">Nom d'utilisateur</label>
+                <input type="text" class="form-control" name="username" id="username" aria-describedby="help-name" placeholder="" required>
+                <small id="help-name" class="form-text text-muted">nom d'utilisateur unique</small>
+                </div>
+
+                <div class="m-3">
+                <label for="password" class="form-label">Mot de passe</label>
+                <input type="password" class="form-control" name="password" id="password" required>
+                </div>
+
+                <div class="m-3">
+                <label for="confirmation-password" class="form-label">Confirmer le mot de passe</label>
+                <input type="password" class="form-control" name="confirmation-password" id="confirmation-password" placeholder="" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary m-3">Envoyer</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock %}

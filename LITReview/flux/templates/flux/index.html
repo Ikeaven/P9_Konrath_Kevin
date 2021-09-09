@@ -1,0 +1,20 @@
+{% extends "flux/base_generic.html" %}
+
+
+{% block content%}
+<div class="container my-5">
+    <div class="row">
+        <div class="col-12">
+            {% for ticket in tickets %}
+                <div class="card mx-auto">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ticket.title}}</h5>
+                        <p class="card-text">{{ticket.description}}</p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+    </div>
+</div>
+{% endblock %}

@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'accueil.apps.AccueilConfig',
     'flux.apps.FluxConfig',
     'django.contrib.admin',
     'django.contrib.auth',
