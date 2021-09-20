@@ -2,14 +2,41 @@
 
 
 {% block content%}
+
+<div class="container my-5">
+    <div class="row">
+        <div class="col-6">
+            <a name="" id="" class="btn btn-primary" href={% url 'create_ticket' %} role="button">Demander une critique</a>
+        </div>
+        <div class="col-6 d-flex justify-content-end">
+            <a name="" id="" class="btn btn-primary" href="#" role="button">Créer une critique</a>
+        </div>
+    </div>
+</div>
+
 <div class="container my-5">
     <div class="row">
         <div class="col-12">
             {% for ticket in tickets %}
+
                 <div class="card mx-auto">
+                    <div class="container px-3">
+                        <div class="row">
+                            <div class="col-6">
+                                <div> {{ticket.user}} à demandé une critique </div>
+                            </div>
+                            <div class="col-6 d-flex justify-content-end">
+                                <div> {{ticket.time_created}}</div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="card-body">
                         <h5 class="card-title">{{ticket.title}}</h5>
                         <p class="card-text">{{ticket.description}}</p>
+                        {% if ticket.image != '' %}
+                            <img src={{ticket.image.url}} alt="image">
+                        {% endif %}
                     </div>
                 </div>
             {% endfor %}

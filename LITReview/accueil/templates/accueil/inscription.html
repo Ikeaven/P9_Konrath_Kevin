@@ -3,7 +3,7 @@
 {% block content %}
 
 
-<div class="container">
+{% comment %} <div class="container">
     <div class="row justify-content-around">
         <div class="col-12">
             <h3>Inscrivez-vous</h3>
@@ -12,13 +12,13 @@
                 {% csrf_token %}
                 <div class="m-3">
                 <label for="username" class="form-label">Nom d'utilisateur</label>
-                <input type="text" class="form-control" name="username" id="username" aria-describedby="help-name" placeholder="" required>
+                {{ form.username }}
                 <small id="help-name" class="form-text text-muted">nom d'utilisateur unique</small>
                 </div>
 
                 <div class="m-3">
                 <label for="password" class="form-label">Mot de passe</label>
-                <input type="password" class="form-control" name="password" id="password" required>
+                {{ form.password }}
                 </div>
 
                 <div class="m-3">
@@ -27,11 +27,34 @@
                 </div>
 
                 <button type="submit" class="btn btn-primary m-3">Envoyer</button>
+                <a name="annuler" id="annuler" class="btn btn-danger" href="/" role="button">Annuler</a>
             </form>
         </div>
     </div>
-</div>
+</div> {% endcomment %}
+
+ <div class="row justify-content-around">
+    <div class="col-12">
+        <div class="m-5">
+            <h3 class="mb-5">Inscrivez-vous</h3>
+            <form action="/inscription/" method="post">
+                {% csrf_token %}
+                {{ form }}
+                <div>
+                    <span id='message'></span>
+                </div>
+
+                <button id = "inscriptio-submit" type="submit" class="btn btn-primary my-3">Envoyer</button>
+                <a name="" id="" class="btn btn-danger" href="/" role="button">Annuler</a>
+
+            </form>
+        </div>
+    </div>
+
+ </div>
 
 
+{% load static %}
+<script type="text/javascript" src={% static 'accueil/password_check.js'%}></script>
 
 {% endblock %}

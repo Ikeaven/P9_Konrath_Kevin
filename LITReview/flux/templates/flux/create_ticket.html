@@ -1,0 +1,22 @@
+{% extends "flux/base_generic.html" %}
+
+{% block content%}
+
+<div class="row justify-content-around">
+    <div class="col-12">
+        <div class="m-5">
+            <h3 class="mb-5">Créer un ticket</h3>
+            <form action="#" method="post">
+                {% csrf_token %}
+                {{ form }}
+                <div>
+                    <button id = "create-ticket-submit" type="submit" class="btn btn-primary my-3">Envoyer</button>
+                    <a name="" id="" class="btn btn-danger" href={% url 'flux' %} role="button">Annuler</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+ </div>
+
+{% endblock %}
