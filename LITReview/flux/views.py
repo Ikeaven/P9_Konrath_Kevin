@@ -3,14 +3,15 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 # from django.http import HttpResponse
 # Create your views here.
-from .models import Ticket
-from .forms import CritiqueRequestForm
+from .models import Ticket, Review
+from .forms import CritiqueRequestForm, ReviewForm
 from django.core.files.storage import default_storage
 
 @login_required
 def index(request):
     tickets = Ticket.objects.order_by('-time_created')
-    context = {'tickets' : tickets}
+    reviews = Review.objects.all()
+    context = {'tickets' : tickets, 'reviews' : reviews}
     return render(request, 'flux/index.html', context)
 
 @login_required
@@ -36,9 +37,30 @@ def create_ticket(request):
     context = {'form': form}
     return render(request, 'flux/create_ticket.html', context)
 
+@login_required
+def create_review(request, ticket_id):
+    if request.method == 'POST':
+        form = ReviewForm(request.POST)
 
-def create_review(request):
-    return render(request, 'flux/create_review.html')
+        # if form.is_valid():
+        review = Review.objects.create(
+            ticket = Ticket.objects.get(pk = ticket_id),
+            rating = request.POST['rating'],
+            user = request.user,
+            headline = request.POST["headline"],
+            body = request.POST["body"]
+            )
+
+
+        # else:
+        #     print('invalid data')
+        return redirect('flux')
+
+    ticket = Ticket.objects.get(pk = ticket_id)
+    form = ReviewForm()
+    context = {'ticket' : ticket, 'form' : form}
+    return render(request, 'flux/create_review.html', context)
+
 
 def logout_view(request):
     logout(request)

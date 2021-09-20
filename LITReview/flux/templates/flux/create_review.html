@@ -2,6 +2,90 @@
 
 {% block content%}
 
-<h1> Create review </h1>
+
+
+<div class="container">
+    <div class="my-3">
+        <h3> Vous êtes en train de poster en réponse à : </h3>
+    </div>
+</div>
+
+<div class="container">
+
+    <div class="card mx-auto">
+        <div class="container px-3">
+            <div class="row">
+                <div class="col-6">
+                    <div> {{ticket.user}} à demandé une critique </div>
+                </div>
+                <div class="col-6 d-flex justify-content-end">
+                    <div> {{ticket.time_created}}</div>
+                </div>
+        </div>
+    </div>
+
+
+
+
+    <div class="container">
+        <div class="card-body">
+            <h5 class="card-title">{{ticket.title}}</h5>
+            <p class="card-text">{{ticket.description}}</p>
+
+            {% if ticket.image != '' %}
+                <img src={{ticket.image.url}} alt="image" height="200px">
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+
+<div class="card my-3">
+    {% comment %} <img class="card-img-top" src="holder.js/100x180/" alt=""> {% endcomment %}
+    <div class="card-body">
+        <h4 class="card-title">Critique</h4>
+
+        <form class='my-5' action="" enctype="multipart/form-data" method="post">
+            {% csrf_token %}
+
+            {{form.headline.label}}
+            {{form.headline}}
+
+            <div class="container my-5">
+                <div class="row">
+                    <div class="col-12 d-flex justify-content-between">
+                        {{form.rating.label}}
+                        {% for radio in form.rating %}
+                            {% comment %} <div class="form-check">
+                                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+                                <label class="form-check-label" for="flexRadioDefault1">
+                                    {{radio.choice_label}}
+                                </label>
+                            </div> {% endcomment %}
+                            <label for="{{ radio.id_for_label }}">
+                                <span class="radio">{{ radio.tag }}</span>
+                                {{ radio.choice_label }}
+
+                            </label>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {{form.body.label}}
+            {{form.body}}
+
+            <div>
+                <button id = "create-review-submit" type="submit" class="btn btn-primary my-3">Envoyer</button>
+                <a name="" id="" class="btn btn-danger" href={% url 'flux' %} role="button">Annuler</a>
+            </div>
+        </form>
+
+
+
+    </div>
+</div>
+
+
+
 
 {% endblock %}
