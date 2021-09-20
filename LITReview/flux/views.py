@@ -32,11 +32,13 @@ def create_ticket(request):
 
         return redirect('flux')
 
-
     form = CritiqueRequestForm()
     context = {'form': form}
     return render(request, 'flux/create_ticket.html', context)
 
+
+def create_review(request):
+    return render(request, 'flux/create_review.html')
 
 def logout_view(request):
     logout(request)
