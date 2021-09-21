@@ -1,15 +1,18 @@
 {% extends "flux/base_generic.html" %}
 
-{% block content%}
+{% block content %}
 
 <div class="container">
     <div class="row justify-content-around">
     <div class="col-12">
         <div class="m-5">
-            <h3 class="mb-5">Créer un ticket</h3>
-            <form action="#" enctype="multipart/form-data" method="post">
+            <h3 class="mb-5">Modifier un ticket</h3>
+            <form action="" enctype="multipart/form-data" method="post">
                 {% csrf_token %}
-                {{ form }}
+                <div class="d-flex flex-column">
+                    {{ form }}
+                </div>
+
                 <div>
                     <button id = "create-ticket-submit" type="submit" class="btn btn-primary my-3">Envoyer</button>
                     <a name="" id="" class="btn btn-danger mx-5" href={% url 'flux' %} role="button">Annuler</a>
@@ -20,6 +23,5 @@
 
  </div>
 </div>
-
 
 {% endblock %}

@@ -9,32 +9,31 @@
     <title>LITReview</title>
 </head>
 <body>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light ">
+            <div class="container">
+                <a class="navbar-brand w-10" href="{% url 'flux' %}"><img class="w-25 mx-5" src="https://user.oc-static.com/upload/2020/09/18/16004297044411_P7.png" alt="Logo"></a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                    <ul class="navbar-nav ">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href={% url 'flux' %}>Flux</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href={% url 'posts' %}>Posts</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href={% url 'abonnements' %}>Abonnements</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="logout_view">Se déconnecter</a>
+                    </li>
 
-    <nav class="navbar navbar-expand-lg navbar-light bg-light ">
-        <div class="container-fluid">
-          <a class="navbar-brand" href="#"><img class="w-50 mx-5" src="https://user.oc-static.com/upload/2020/09/18/16004297044411_P7.png" alt="Logo"></a>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-          </button>
-          <div class="collapse navbar-collapse start-0" id="navbarNav">
-            <ul class="navbar-nav">
-              <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="">Flux</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="posts">Posts</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="abonnements">Abonnements</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="logout_view">Se déconnecter</a>
-              </li>
-
-            </ul>
-          </div>
-        </div>
-      </nav>
+                    </ul>
+            </div>
+            </div>
+        </nav>
     {% block content %} {% endblock %}
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>

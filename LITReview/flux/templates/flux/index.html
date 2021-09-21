@@ -18,15 +18,19 @@
     <div class="row">
         <div class="col-12">
             {% for ticket in tickets %}
-                <div class="card mx-auto my-3">
+                <div class="card mx-auto my-3 bg-light">
 
 
                         {% for review in reviews %}
                             {% if ticket.id == review.ticket.id %}
-                            <div class="card m-1">
+                            <div class="card m-2">
                                 {% comment %} <img class="card-img-top" src="holder.js/100x180/" alt=""> {% endcomment %}
                                 <div class="card-body">
-                                    <span>{{review.user.username}} à posté une critique :</span>
+                                    <div class="d-flex justify-content-between">
+                                        <span>{{review.user.username}} à posté une critique :</span>
+                                        <span>{{review.time_created}}</span>
+                                    </div>
+
                                     <h4 class="card-title">{{review.headline}}</h4>
                                     <p class="card-text rating" hidden> {{review.rating}} </p>
                                     <p class="card-text">{{review.body}}</p>

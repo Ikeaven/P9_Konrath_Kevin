@@ -6,6 +6,8 @@ from django.contrib.auth import logout
 from .models import Ticket, Review
 from .forms import CritiqueRequestForm, ReviewForm
 from django.core.files.storage import default_storage
+from django.views import generic
+
 
 @login_required
 def index(request):
@@ -60,6 +62,41 @@ def create_review(request, ticket_id):
     form = ReviewForm()
     context = {'ticket' : ticket, 'form' : form}
     return render(request, 'flux/create_review.html', context)
+
+# @login_required
+# def posts(request):
+#     return render(request, 'flux/posts.html')
+
+class TicketsListView(generic.ListView):
+    template_name = 'flux/posts_list.html'
+    model = Ticket
+
+    def get(self, request):
+        tickets = Ticket.objects.filter(user = request.user.id)
+        reviews = Review.objects.filter(user = request.user.id)
+        related_ticket = []
+        context = {'tickets': tickets, 'reviews':reviews}
+        return render(request, self.template_name, context)
+
+class TicketDetailView(generic.UpdateView):
+    model = Ticket
+    template_name='flux/detail_ticket.html'
+    form_class = CritiqueRequestForm
+    success_url = '/flux/posts'
+
+    def form_valid(self, form):
+        # This method is called when valid form data has been POSTed.
+        # It should return an HttpResponse.
+        return super().form_valid(form)
+
+class TicketDeleteView(generic.DeleteView):
+    model = Ticket
+    success_url = ('/flux/posts')
+
+
+@login_required
+def abonnements(request):
+    return render(request, 'flux/abonnements.html')
 
 
 def logout_view(request):
