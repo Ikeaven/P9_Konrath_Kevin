@@ -17,6 +17,9 @@
 
             <h4 class="card-title">{{ticket.title}}</h4>
             <p class="card-text">{{ticket.description}}</p>
+            {% if ticket.image != '' %}
+                <img src={{ ticket.image.url}} alt="image" height="200px">
+            {% endif %}
             <div class="d-flex justify-content-end">
                 <div class="d-flex justify-content-around w-25">
                     <a class="btn btn-primary" href="modify_ticket/{{ticket.id}}" role="button">Modifier</a>
