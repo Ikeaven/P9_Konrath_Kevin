@@ -93,6 +93,9 @@ class TicketDeleteView(generic.DeleteView):
     model = Ticket
     success_url = ('/flux/posts')
 
+class ReviewDeleteView(generic.DeleteView):
+    model = Review
+    success_url = ('/flux/posts')
 
 @login_required
 def abonnements(request):
