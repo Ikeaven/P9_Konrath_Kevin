@@ -1,0 +1,15 @@
+{% extends "flux/base_generic.html" %}
+
+{% block content %}
+    <div class="container d-flex justify-content-center">
+        <form method="post" class="m-5">
+            {% csrf_token %}
+            <p>Êtes-vous sûr de vouloir supprimer : "{{ object }}"?</p>
+            {% comment %} <input type="submit" value="Confirm"> {% endcomment %}
+            <button type="submit" class="btn btn-danger m-2">Supprimer</button>
+            <a name="" id="" class="btn btn-primary" href={% url 'posts' %} role="button">Annuler</a>
+
+        </form>
+    </div>
+
+{% endblock content %}

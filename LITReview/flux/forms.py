@@ -1,5 +1,5 @@
 from django import forms
-from .models import Ticket
+from .models import Ticket, UserFollows
 
 # class CritiqueRequestForm(forms.Form):
 #     title = forms.CharField(label='Titre', max_length=128, widget=forms.TextInput(attrs={'class': 'form-control my-3'}))
@@ -30,3 +30,7 @@ class ReviewForm(forms.Form):
     headline = forms.CharField(label='Titre', max_length=128, widget=forms.TextInput(attrs={'class': 'form-control my-3'}))
     rating = forms.ChoiceField(label='Notes', choices=RATING_CHOICES, widget=forms.RadioSelect(attrs={'class':'form-check form-check-inline'}))
     body = forms.CharField(label='Commentaire', max_length=8192, widget=forms.Textarea(attrs={'class': 'form-control my-3'}))
+
+
+class AbonnementsForm(forms.Form):
+    name = forms.CharField(label="Nom d'utilisateur", widget=forms.TextInput(attrs={'class': 'form-control my-3'}))

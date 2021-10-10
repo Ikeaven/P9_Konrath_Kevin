@@ -1,10 +1,12 @@
-from django.shortcuts import render, redirect
+from django.http.response import Http404
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
+from django.contrib.auth.models import User
 # from django.http import HttpResponse
 # Create your views here.
-from .models import Ticket, Review
-from .forms import CritiqueRequestForm, ReviewForm
+from .models import Ticket, Review, UserFollows
+from .forms import CritiqueRequestForm, ReviewForm, AbonnementsForm
 from django.core.files.storage import default_storage
 from django.views import generic
 
@@ -99,8 +101,28 @@ class ReviewDeleteView(generic.DeleteView):
 
 @login_required
 def abonnements(request):
-    return render(request, 'flux/abonnements.html')
+    if request.method == 'POST':
+        # form = AbonnementsForm(request.POST)
+        name = request.POST['name']
+        try:
+            user = get_object_or_404(User, username=name)
+            UserFollows.objects.create(
+                user = request.user,
+                followed_user = user,
+            )
+        except User.DoesNotExist:
+            raise Http404("No MyModel matches the given query.")
 
+
+    form = AbonnementsForm
+    followed_users = UserFollows.objects.filter(user = request.user.id)
+    followers = UserFollows.objects.filter(followed_user = request.user.id)
+    context = {'form':form, 'followed_users':followed_users, 'followers':followers}
+    return render(request, 'flux/abonnements.html', context)
+
+class UnsubscribeView(generic.DeleteView):
+    model = UserFollows
+    success_url = ('/flux/abonnements')
 
 def logout_view(request):
     logout(request)
