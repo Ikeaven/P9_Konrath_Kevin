@@ -13,6 +13,7 @@ from django.views import generic
 
 @login_required
 def index(request):
+    # followed_user = UserFollows.objects.filter(user = request.user.id)
     tickets = Ticket.objects.order_by('-time_created')
     reviews = Review.objects.all()
     context = {'tickets' : tickets, 'reviews' : reviews}
