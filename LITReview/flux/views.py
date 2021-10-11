@@ -1,3 +1,4 @@
+# from django.db.models.fields import BooleanField
 from django.http.response import Http404
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
@@ -6,17 +7,46 @@ from django.contrib.auth.models import User
 # from django.http import HttpResponse
 # Create your views here.
 from .models import Ticket, Review, UserFollows
+from django.db.models import CharField, Value, Count
 from .forms import CritiqueRequestForm, ReviewForm, AbonnementsForm
 from django.core.files.storage import default_storage
 from django.views import generic
 
+from itertools import chain
+
+
+def get_users_viewable_reviews(user):
+    followed_users = UserFollows.objects.filter(user = user)
+    print([user.followed_user for user in followed_users])
+    reviews = Review.objects.filter(user = user) | Review.objects.filter(user__in = [el.followed_user for el in followed_users])
+    return reviews
+
+def get_users_viewable_tickets(user):
+    followed_users = UserFollows.objects.filter(user = user)
+    tickets = Ticket.objects.filter(user = user) | Ticket.objects.filter(user__in = [el.followed_user for el in followed_users])
+    return tickets
 
 @login_required
 def index(request):
-    # followed_user = UserFollows.objects.filter(user = request.user.id)
-    tickets = Ticket.objects.order_by('-time_created')
-    reviews = Review.objects.all()
-    context = {'tickets' : tickets, 'reviews' : reviews}
+    reviews = get_users_viewable_reviews(request.user)
+    reviews = reviews.annotate(content_type=Value('REVIEW', CharField()))
+
+    tickets = get_users_viewable_tickets(request.user)
+    tickets = tickets.annotate(content_type=Value('TICKET', CharField()))
+    tickets = tickets.annotate(num_reviews = Count('review') )
+    # for index in range(len(tickets)):
+    #     if Review.objects.filter(ticket = tickets[index]).exists:
+    #         tickets[index].annotate(commented=Value(True, BooleanField()))
+    #     else:
+    #         tickets[index].annotate(commented=Value(False, BooleanField()))
+
+    posts = sorted(
+        chain(reviews, tickets),
+        key=lambda post: post.time_created,
+        reverse=True
+    )
+
+    context = {'posts':posts}
     return render(request, 'flux/index.html', context)
 
 @login_required
