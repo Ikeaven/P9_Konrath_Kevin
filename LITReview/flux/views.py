@@ -1,4 +1,5 @@
 # from django.db.models.fields import BooleanField
+import re
 from django.http.response import Http404
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
@@ -8,7 +9,7 @@ from django.contrib.auth.models import User
 # Create your views here.
 from .models import Ticket, Review, UserFollows
 from django.db.models import CharField, Value, Count
-from .forms import CritiqueRequestForm, ReviewForm, AbonnementsForm
+from .forms import CritiqueRequestForm, ReviewForm, AbonnementsForm, ReviewRequestForm
 from django.core.files.storage import default_storage
 from django.views import generic
 
@@ -34,11 +35,6 @@ def index(request):
     tickets = get_users_viewable_tickets(request.user)
     tickets = tickets.annotate(content_type=Value('TICKET', CharField()))
     tickets = tickets.annotate(num_reviews = Count('review') )
-    # for index in range(len(tickets)):
-    #     if Review.objects.filter(ticket = tickets[index]).exists:
-    #         tickets[index].annotate(commented=Value(True, BooleanField()))
-    #     else:
-    #         tickets[index].annotate(commented=Value(False, BooleanField()))
 
     posts = sorted(
         chain(reviews, tickets),
@@ -96,9 +92,38 @@ def create_review(request, ticket_id):
     context = {'ticket' : ticket, 'form' : form}
     return render(request, 'flux/create_review.html', context)
 
-# @login_required
-# def posts(request):
-#     return render(request, 'flux/posts.html')
+
+@login_required
+def create_ticket_and_review(request):
+    ticket_form = CritiqueRequestForm()
+    review_form = ReviewForm()
+
+    if request.method == 'POST':
+        ticket_form = CritiqueRequestForm(request.POST, request.FILES)
+        review_form = ReviewForm(request.POST)
+        if all([ticket_form.is_valid(), review_form.is_valid()]):
+            ticket = Ticket.objects.create(
+                title = ticket_form.cleaned_data['title'],
+                description = ticket_form.cleaned_data['description'],
+                image = ticket_form.cleaned_data['image'],
+                user = request.user
+            )
+            Review.objects.create(
+            ticket = Ticket.objects.get(pk = ticket.id),
+            rating = review_form.cleaned_data['rating'],
+            user = request.user,
+            headline = review_form.cleaned_data['headline'],
+            body = review_form.cleaned_data['body']
+            )
+            return redirect('flux')
+        return redirect('create_ticket_and_review')
+    context = {
+        'ticket_form': ticket_form,
+        'review_form': review_form,
+    }
+    return render(request, 'flux/create_ticket_and_review.html', context=context)
+
+
 
 class TicketsListView(generic.ListView):
     template_name = 'flux/posts_list.html'
@@ -106,20 +131,36 @@ class TicketsListView(generic.ListView):
 
     def get(self, request):
         tickets = Ticket.objects.filter(user = request.user.id)
+        tickets = tickets.annotate(content_type=Value('TICKET', CharField()))
         reviews = Review.objects.filter(user = request.user.id)
-        related_ticket = []
-        context = {'tickets': tickets, 'reviews':reviews}
+        reviews = reviews.annotate(content_type=Value('REVIEW', CharField()))
+        posts = sorted(
+        chain(reviews, tickets),
+        key=lambda post: post.time_created,
+        reverse=True
+        )
+        context = {'posts':posts}
         return render(request, self.template_name, context)
 
 class TicketDetailView(generic.UpdateView):
     model = Ticket
-    template_name='flux/detail_ticket.html'
+    template_name = 'flux/detail_ticket.html'
     form_class = CritiqueRequestForm
     success_url = '/flux/posts'
 
     def form_valid(self, form):
         # This method is called when valid form data has been POSTed.
         # It should return an HttpResponse.
+        return super().form_valid(form)
+
+
+class ReviewDetailView(generic.UpdateView):
+    model = Review
+    template_name = 'flux/detail_review.html'
+    form_class = ReviewRequestForm
+    success_url = '/flux/posts'
+
+    def form_valid(self, form):
         return super().form_valid(form)
 
 class TicketDeleteView(generic.DeleteView):

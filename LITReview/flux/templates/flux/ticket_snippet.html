@@ -19,5 +19,13 @@
                 <a name="" id="" class="btn btn-primary" href="create_review/{{ticket.id}}" role="button">Créer une critique</a>
             </div>
         {% endif%}
+        {% if modify_ticket == True %}
+            <div class="d-flex justify-content-end">
+                <div class="d-flex justify-content-around w-25">
+                    <a class="btn btn-primary" href="modify_ticket/{{ticket.id}}" role="button">Modifier</a>
+                    <a class="btn btn-danger" href="delete_ticket/{{ticket.id}}" role="button">Supprimer</a>
+                </div>
+            </div>
+        {% endif %}
     </div>
 </div>

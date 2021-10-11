@@ -1,14 +1,36 @@
 {% extends "flux/base_generic.html" %}
 
+
+
 {% block content %}
 <div class="container d-flex justify-content-center my-3">
     <h1> Vos posts </h1>
 </div>
 
 <div class="container">
+    <div class="row">
+        <div class="col-12">
+            {% for post in posts %}
+                {% if post.content_type == 'TICKET' %}
+                    <div class="my-2">
+                        {% include 'flux/ticket_snippet.html' with ticket=post modify_ticket=True%}
+
+                {% elif post.content_type == 'REVIEW' %}
+                    <div class="my-2">
+                        {% include 'flux/review_snippet.html' with review=post modify_review=True %}
+                    </div>
+                {% endif%}
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+
+
+
+{% comment %} <div class="container">
     {% for ticket in tickets %}
     <div class="card">
-        {% comment %} <img class="card-img-top" src="holder.js/100x180/" alt=""> {% endcomment %}
         <div class="card-body">
             <div class="d-flex justify-content-between">
                 <span> Vous avez publié un ticket</span>
@@ -35,7 +57,6 @@
 {% for review in reviews %}
     <div class="container my-3">
         <div class="card bg-light">
-            {% comment %} <img class="card-img-top" src="holder.js/100x180/" alt=""> {% endcomment %}
             <div class="card-body">
                 <div class="d-flex justify-content-between">
                     <div>
@@ -56,7 +77,6 @@
                 </div>
             </div>
             <div class="card m-2">
-                {% comment %} <img class="card-img-top" src="holder.js/100x180/" alt=""> {% endcomment %}
                 <div class="card-body">
                     <p>Ticket - {{review.ticket.user.username}}</p>
                     <h4 class="card-title">{{ review.ticket.title }}</h4>
@@ -70,7 +90,7 @@
         </div>
 
     </div>
-{% endfor %}
+{% endfor %} {% endcomment %}
 
 
 {% load static %}

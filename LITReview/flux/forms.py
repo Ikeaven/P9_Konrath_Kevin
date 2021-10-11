@@ -1,5 +1,6 @@
 from django import forms
-from .models import Ticket, UserFollows
+from django.forms import fields
+from .models import Review, Ticket, UserFollows
 
 # class CritiqueRequestForm(forms.Form):
 #     title = forms.CharField(label='Titre', max_length=128, widget=forms.TextInput(attrs={'class': 'form-control my-3'}))
@@ -23,8 +24,26 @@ class CritiqueRequestForm(forms.ModelForm):
                 visible.field.widget.attrs['class'] = 'form-control'
 
 
-RATING_CHOICES = [('1', '1'), ('2', '2'), ('3', '3'), ('4', '4'), ('5', '5')]
+class ReviewRequestForm(forms.ModelForm):
+    class Meta:
+        model = Review
+        fields = ['headline', 'rating', 'body']
 
+    def __init__(self, *args, **kwargs):
+        super(ReviewRequestForm, self).__init__(*args, **kwargs)
+        for visible in self.visible_fields():
+            if visible.name == 'rating':
+                RATING_CHOICES = [('1', '1'), ('2', '2'), ('3', '3'), ('4', '4'), ('5', '5')]
+                visible.field = forms.ChoiceField(choices=RATING_CHOICES, widget=forms.RadioSelect(attrs={'class':'form-check form-check-inline'}))
+            elif visible.name == 'headline':
+                visible.field = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control my-3'}))
+            else:
+                visible.field = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control my-3'}))
+
+
+
+
+RATING_CHOICES = [('1', '1'), ('2', '2'), ('3', '3'), ('4', '4'), ('5', '5')]
 
 class ReviewForm(forms.Form):
     headline = forms.CharField(label='Titre', max_length=128, widget=forms.TextInput(attrs={'class': 'form-control my-3'}))

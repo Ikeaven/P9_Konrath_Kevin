@@ -1,0 +1,38 @@
+<div class="card my-3">
+    {% comment %} <img class="card-img-top" src="holder.js/100x180/" alt=""> {% endcomment %}
+    <div class="card-body">
+        <h4 class="card-title">Critique</h4>
+
+        <form class='my-5' action="" enctype="multipart/form-data" method="post">
+            {% csrf_token %}
+
+            {{form.headline.label}}
+            {{form.headline}}
+
+            <div class="container my-5">
+                <div class="row">
+                    <div class="col-12 d-flex justify-content-between">
+                        {{form.rating.label}}
+                        {% for radio in form.rating %}
+                            <label for="{{ radio.id_for_label }}">
+                                <span class="radio">{{ radio.tag }}</span>
+                                {{ radio.choice_label }}
+
+                            </label>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {{form.body.label}}
+            {{form.body}}
+
+            <div>
+                <button id = "create-review-submit" type="submit" class="btn btn-primary my-3">Envoyer</button>
+                <a name="" id="" class="btn btn-danger" href={% url 'flux' %} role="button">Annuler</a>
+            </div>
+        </form>
+
+
+
+    </div>
+</div>

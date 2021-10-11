@@ -1,0 +1,75 @@
+{% extends "flux/base_generic.html" %}
+
+{% block content %}
+
+{% comment %} <div class="container">
+    <div class="row justify-content-around">
+    <div class="col-12">
+        <div class="m-5">
+            <h3 class="mb-5">Modifier un ticket</h3>
+            <form action="" enctype="multipart/form-data" method="post">
+                {% csrf_token %}
+                <div class="d-flex flex-column">
+                    {{ form }}
+                </div>
+
+                <div>
+                    <button id = "create-ticket-submit" type="submit" class="btn btn-primary my-3">Envoyer</button>
+                    <a name="" id="" class="btn btn-danger mx-5" href={% url 'flux' %} role="button">Annuler</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+ </div>
+</div> {% endcomment %}
+
+{% comment %} <div class="container">
+    <div class="card my-3">
+
+        <div class="card-body">
+            <h4 class="card-title">Modifier une critique</h4>
+
+            <form class='my-5' action="" enctype="multipart/form-data" method="post">
+                {% csrf_token %}
+
+                {{form.headline.label}}
+                {{form.headline}}
+
+                <div class="container my-5">
+                    <div class="row">
+                        <div class="col-12 d-flex justify-content-between">
+                            {{form.rating.label}}
+                            {% for radio in form.rating %}
+                                <label for="{{ radio.id_for_label }}">
+                                    <span class="radio">{{ radio.tag }}</span>
+                                    {{ radio.choice_label }}
+
+                                </label>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {{form.body.label}}
+                {{form.body}}
+
+                <div>
+                    <button id = "create-review-submit" type="submit" class="btn btn-primary my-3">Envoyer</button>
+                    <a name="" id="" class="btn btn-danger" href={% url 'flux' %} role="button">Annuler</a>
+                </div>
+            </form>
+
+
+
+        </div>
+    </div>
+</div> {% endcomment %}
+<div class="container">
+    <h1 class="my-5">Modification d'une critique :</h1>
+    {% include "flux/ticket_snippet.html" with ticket=review.ticket %}
+
+    {% include "flux/review_form.html" %}
+</div>
+
+
+{% endblock %}

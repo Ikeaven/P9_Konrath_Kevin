@@ -1,16 +1,11 @@
 {% extends "flux/base_generic.html" %}
 
 {% block content %}
-    <div class="container d-flex justify-content-center">
-        <form method="post" class="m-5">
+    <div class="container">
+        <form method="post" class="my-5">
             {% csrf_token %}
             <p>Êtes-vous sûr de vouloir supprimer le ticket :</p>
-            <div class="card">
-                <div class="card-body">
-                    <h4 class="card-title">{{object.title}}</h4>
-                    <p class="card-text">Te{{object.description}}xt</p>
-                </div>
-            </div>
+            {% include "flux/ticket_snippet.html" %}
             {% comment %} <input type="submit" value="Confirm"> {% endcomment %}
             <button type="submit" class="btn btn-danger m-2">Supprimer</button>
             <a name="" id="" class="btn btn-primary" href={% url 'posts' %} role="button">Annuler</a>

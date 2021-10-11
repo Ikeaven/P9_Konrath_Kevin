@@ -1,0 +1,46 @@
+{% extends "flux/base_generic.html" %}
+
+{% block content %}
+<div class="container">
+    <form action="#" enctype="multipart/form-data" method="post">
+        {% csrf_token %}
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Ticket</h4>
+                {{ ticket_form }}
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Commentaire</h4>
+                {{review_form.headline.label}}
+                {{review_form.headline}}
+
+                <div class="container my-5">
+                    <div class="row">
+                        <div class="col-12 d-flex justify-content-between">
+                            {{review_form.rating.label}}
+                            {% for radio in review_form.rating %}
+                                <label for="{{ radio.id_for_label }}">
+                                    <span class="radio">{{ radio.tag }}</span>
+                                    {{ radio.choice_label }}
+
+                                </label>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {{review_form.body.label}}
+                {{review_form.body}}
+            </div>
+        </div>
+        <div>
+            <button id = "create-ticket-submit" type="submit" class="btn btn-primary my-3">Envoyer</button>
+            <a name="" id="" class="btn btn-danger mx-5" href={% url 'flux' %} role="button">Annuler</a>
+        </div>
+    </form>
+</div>
+
+
+{% endblock content %}
