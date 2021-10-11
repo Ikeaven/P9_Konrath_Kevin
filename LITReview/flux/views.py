@@ -1,5 +1,6 @@
 # from django.db.models.fields import BooleanField
 import re
+from django.db.models.query import EmptyQuerySet
 from django.http.response import Http404
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
@@ -18,12 +19,13 @@ from itertools import chain
 
 def get_users_viewable_reviews(user):
     followed_users = UserFollows.objects.filter(user = user)
-    print([user.followed_user for user in followed_users])
-    reviews = Review.objects.filter(user = user) | Review.objects.filter(user__in = [el.followed_user for el in followed_users])
+    tickets = Ticket.objects.filter(user = user)
+    reviews = Review.objects.filter(user = user) | Review.objects.filter(user__in = [el.followed_user for el in followed_users]) | Review.objects.filter(ticket__in = tickets)
     return reviews
 
 def get_users_viewable_tickets(user):
     followed_users = UserFollows.objects.filter(user = user)
+
     tickets = Ticket.objects.filter(user = user) | Ticket.objects.filter(user__in = [el.followed_user for el in followed_users])
     return tickets
 
