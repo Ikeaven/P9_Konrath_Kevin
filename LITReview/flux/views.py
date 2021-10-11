@@ -42,7 +42,7 @@ def index(request):
         reverse=True
     )
 
-    context = {'posts':posts}
+    context = {'posts':posts, 'current_page':'flux'}
     return render(request, 'flux/index.html', context)
 
 @login_required
@@ -139,7 +139,7 @@ class TicketsListView(generic.ListView):
         key=lambda post: post.time_created,
         reverse=True
         )
-        context = {'posts':posts}
+        context = {'posts':posts, 'current_page':'posts'}
         return render(request, self.template_name, context)
 
 class TicketDetailView(generic.UpdateView):
@@ -189,7 +189,7 @@ def abonnements(request):
     form = AbonnementsForm
     followed_users = UserFollows.objects.filter(user = request.user.id)
     followers = UserFollows.objects.filter(followed_user = request.user.id)
-    context = {'form':form, 'followed_users':followed_users, 'followers':followers}
+    context = {'form':form, 'followed_users':followed_users, 'followers':followers, 'current_page':'abonnements'}
     return render(request, 'flux/abonnements.html', context)
 
 class UnsubscribeView(generic.DeleteView):
