@@ -15,18 +15,18 @@
                 <div>
                     <span class="text-danger">Identifiant ou mot de passe incorrect</span>
                 </div>
-                {% endif %}
-                <form class="form" action="{% url 'connexion' %}" method="post">
-                {% csrf_token %}
-                    <label for="" class="form-label"></label>
+                    {% endif %}
+                    <form class="form" action="{% url 'connexion' %}" method="post">
+                    {% csrf_token %}
+                        <label for="" class="form-label"></label>
 
                         <div class="mb-3">
-                        <label for="name" class="form-label">Nom d'utilisateur</label>
-                        <input type="text" class="form-control" name="name" id="name" aria-describedby="helpId">
+                            <label for="name" class="form-label">Nom d'utilisateur</label>
+                            <input type="text" class="form-control" name="name" id="name" aria-describedby="helpId">
                         {% comment %} <small id="helpId" class="form-text text-muted">le nom d'utilisateur doit être unique</small> {% endcomment %}
                         </div>
                     </div>
-                    <div class="mb-3">
+                    <div class="mb-4">
                         <label for="password" class="form-label">Mot de passe</label>
                         <input type="password" class="form-control" name="password" id="password" placeholder="">
                     </div>
