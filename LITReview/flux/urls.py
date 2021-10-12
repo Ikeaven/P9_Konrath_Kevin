@@ -4,7 +4,7 @@ from django.urls import path
 from . import views
 
 urlpatterns = [path('', views.index, name='flux'),
-path('logout_view', views.logout_view, name='logout'),
+path('logout_view', views.logout_view, name='logout_view'),
 path('create_ticket', views.create_ticket, name='create_ticket'),
 path('create_review/<int:ticket_id>', views.create_review, name='create_review'),
 path('create_ticket_and_review', views.create_ticket_and_review, name='create_ticket_and_review'),

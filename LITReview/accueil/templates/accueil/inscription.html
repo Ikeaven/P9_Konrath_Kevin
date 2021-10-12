@@ -32,26 +32,27 @@
         </div>
     </div>
 </div> {% endcomment %}
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <div class="m-5">
+                <h3 class="mb-5">Inscrivez-vous</h3>
+                <form action="/inscription/" method="post">
+                    {% csrf_token %}
+                    {{ form }}
+                    <div>
+                        <span id='message'></span>
+                    </div>
 
- <div class="row justify-content-around">
-    <div class="col-12">
-        <div class="m-5">
-            <h3 class="mb-5">Inscrivez-vous</h3>
-            <form action="/inscription/" method="post">
-                {% csrf_token %}
-                {{ form }}
-                <div>
-                    <span id='message'></span>
-                </div>
+                    <button id = "inscriptio-submit" type="submit" class="btn btn-primary my-3">Envoyer</button>
+                    <a name="" id="" class="btn btn-danger" href="/" role="button">Annuler</a>
 
-                <button id = "inscriptio-submit" type="submit" class="btn btn-primary my-3">Envoyer</button>
-                <a name="" id="" class="btn btn-danger" href="/" role="button">Annuler</a>
-
-            </form>
+                </form>
+            </div>
         </div>
     </div>
+</div>
 
- </div>
 
 
 {% load static %}

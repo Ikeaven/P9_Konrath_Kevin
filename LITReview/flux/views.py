@@ -1,19 +1,15 @@
-# from django.db.models.fields import BooleanField
-import re
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models.query import EmptyQuerySet
 from django.http.response import Http404
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 from django.contrib.auth.models import User
-# from django.http import HttpResponse
-# Create your views here.
 from .models import Ticket, Review, UserFollows
 from django.db.models import CharField, Value, Count
 from .forms import CritiqueRequestForm, ReviewForm, AbonnementsForm, ReviewRequestForm
 from django.core.files.storage import default_storage
 from django.views import generic
-
 from itertools import chain
 
 
@@ -127,7 +123,7 @@ def create_ticket_and_review(request):
 
 
 
-class TicketsListView(generic.ListView):
+class TicketsListView(LoginRequiredMixin, generic.ListView):
     template_name = 'flux/posts_list.html'
     model = Ticket
 
@@ -144,7 +140,7 @@ class TicketsListView(generic.ListView):
         context = {'posts':posts, 'current_page':'posts'}
         return render(request, self.template_name, context)
 
-class TicketDetailView(generic.UpdateView):
+class TicketDetailView(LoginRequiredMixin, generic.UpdateView):
     model = Ticket
     template_name = 'flux/detail_ticket.html'
     form_class = CritiqueRequestForm
@@ -156,7 +152,7 @@ class TicketDetailView(generic.UpdateView):
         return super().form_valid(form)
 
 
-class ReviewDetailView(generic.UpdateView):
+class ReviewDetailView(LoginRequiredMixin, generic.UpdateView):
     model = Review
     template_name = 'flux/detail_review.html'
     form_class = ReviewRequestForm
@@ -165,11 +161,11 @@ class ReviewDetailView(generic.UpdateView):
     def form_valid(self, form):
         return super().form_valid(form)
 
-class TicketDeleteView(generic.DeleteView):
+class TicketDeleteView(LoginRequiredMixin, generic.DeleteView):
     model = Ticket
     success_url = ('/flux/posts')
 
-class ReviewDeleteView(generic.DeleteView):
+class ReviewDeleteView(LoginRequiredMixin, generic.DeleteView):
     model = Review
     success_url = ('/flux/posts')
 
@@ -194,7 +190,7 @@ def abonnements(request):
     context = {'form':form, 'followed_users':followed_users, 'followers':followers, 'current_page':'abonnements'}
     return render(request, 'flux/abonnements.html', context)
 
-class UnsubscribeView(generic.DeleteView):
+class UnsubscribeView(LoginRequiredMixin, generic.DeleteView):
     model = UserFollows
     success_url = ('/flux/abonnements')
 
