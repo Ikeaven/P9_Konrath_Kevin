@@ -11,6 +11,11 @@
             <div class="col-6">
                 <h3>Connectez-vous</h3>
                 <div class="mb-3">
+                {% if error %}
+                <div>
+                    <span class="text-danger">Identifiant ou mot de passe incorrect</span>
+                </div>
+                {% endif %}
                 <form class="form" action="{% url 'connexion' %}" method="post">
                 {% csrf_token %}
                     <label for="" class="form-label"></label>

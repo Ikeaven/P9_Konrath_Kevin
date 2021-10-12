@@ -4,53 +4,43 @@ from django.contrib.auth.hashers import make_password
 from django.urls import reverse
 from django.contrib.auth import authenticate, login
 
-from .forms import InscriptionForm
+from .forms import DivErrorList, InscriptionForm
 
 
 def index(request):
-    return render(request, 'accueil/index.html')
+    context = {"error": False}
+    return render(request, 'accueil/index.html', context)
 
-# def inscription(request):
-#     if request.method == 'POST':
-#         username = request.POST.get('username')
-#         password = request.POST.get('password')
-
-#         user = User.objects.filter(username=username)
-#         if not user.exists():
-#             user = User.objects.create(
-#                 username = username,
-#                 password = make_password(password, 'salt', 'default')
-#             )
-#             return redirect('accueil')
-#         else:
-#             print("user already exist")
-#             return redirect('accueil')
-
-#     else:
-#         return render(request, 'accueil/inscription.html')
 
 def inscription(request):
     if request.method == 'POST':
-        form = InscriptionForm(request.POST)
+        form = InscriptionForm(request.POST, error_class=DivErrorList)
         if form.is_valid():
             username = request.POST.get('username')
             password = request.POST.get('password')
+            verify_password = request.POST.get('verify_password')
 
-            user = User.objects.filter(username=username)
-            if not user.exists():
-                user = User.objects.create(
-                    username = username,
-                    password = make_password(password, 'salt', 'default')
-                )
+            if password != verify_password:
+                form.add_error('verify_password', "Les deux mots de passe ne sont pas identiques !")
+                return render(request, 'accueil/inscription.html', {'form': form})
             else:
-                print("user already exist")
+                user = User.objects.filter(username=username)
+                if not user.exists():
+                    user = User.objects.create(
+                        username = username,
+                        password = make_password(password, 'salt', 'default')
+                    )
+                    return redirect('accueil')
+                else:
+                    form.add_error('username', "Ce nom d'utilisateur est déjà utilisé")
+                    return render(request, 'accueil/inscription.html', {'form': form})
 
-            return redirect('accueil')
         else:
             return render(request, 'accueil/inscription.html', {'form': form})
     else:
-        form = InscriptionForm()
+        form = InscriptionForm(error_class=DivErrorList)
     return render(request, 'accueil/inscription.html', {'form': form})
+
 
 def connexion(request):
     if request.method == 'POST':
@@ -59,4 +49,5 @@ def connexion(request):
             login(request, user)
             return redirect('flux')
         else:
-            return redirect('accueil')
+            context = {'error':True}
+            return render(request, 'accueil/index.html', context)
