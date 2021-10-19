@@ -106,7 +106,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
 
-LANGUAGE_CODE = 'fr'
+LANGUAGE_CODE = 'fr-fr'
 
 TIME_ZONE = 'Europe/Paris'
 
@@ -127,3 +127,6 @@ LOGIN_URL = 'accueil'
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = "../"
+
+# Model USER
+AUTH_USER_MODEL = 'accueil.User'

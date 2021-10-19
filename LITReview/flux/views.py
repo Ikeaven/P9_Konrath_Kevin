@@ -1,10 +1,10 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.db.models.query import EmptyQuerySet
 from django.http.response import Http404
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
-from django.contrib.auth.models import User
+from accueil.models import User
 from .models import Ticket, Review, UserFollows
 from django.db.models import CharField, Value, Count
 from .forms import CritiqueRequestForm, ReviewForm, AbonnementsForm, ReviewRequestForm
@@ -123,7 +123,7 @@ def create_ticket_and_review(request):
 
 
 
-class TicketsListView(LoginRequiredMixin, generic.ListView):
+class TicketsListView(LoginRequiredMixin,generic.ListView):
     template_name = 'flux/posts_list.html'
     model = Ticket
 
