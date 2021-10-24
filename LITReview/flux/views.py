@@ -1,7 +1,8 @@
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import PermissionDenied
-from django.core.files.uploadedfile import SimpleUploadedFile
-from django.db.models.query import EmptyQuerySet
+from django.core.paginator import Paginator
+# from django.core.files.uploadedfile import SimpleUploadedFile
+# from django.db.models.query import EmptyQuerySet
 from django.http.response import Http404
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
@@ -42,7 +43,13 @@ def index(request):
         reverse=True
     )
 
-    context = {'posts':posts, 'current_page':'flux'}
+    paginator = Paginator(posts, 10)
+    page = request.GET.get('page')
+
+    page_obj = paginator.get_page(page)
+
+    # context = {'posts':posts, 'current_page':'flux'}
+    context = {'page_obj':page_obj, 'current_page':'flux'}
     return render(request, 'flux/index.html', context)
 
 @login_required
