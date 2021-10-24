@@ -1,32 +1,35 @@
+from itertools import chain
+
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator
-# from django.core.files.uploadedfile import SimpleUploadedFile
-# from django.db.models.query import EmptyQuerySet
 from django.http.response import Http404
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
+from django.db.models import CharField, Value, Count
+from django.views import generic
+
 from accueil.models import User
 from .models import Ticket, Review, UserFollows
-from django.db.models import CharField, Value, Count
 from .forms import CritiqueRequestForm, ReviewForm, AbonnementsForm, ReviewRequestForm
-from django.core.files.storage import default_storage
-from django.views import generic
-from itertools import chain
 
 
 def get_users_viewable_reviews(user):
-    followed_users = UserFollows.objects.filter(user = user)
-    tickets = Ticket.objects.filter(user = user)
-    reviews = Review.objects.filter(user = user) | Review.objects.filter(user__in = [el.followed_user for el in followed_users]) | Review.objects.filter(ticket__in = tickets)
+    followed_users = UserFollows.objects.filter(user=user)
+    tickets = Ticket.objects.filter(user=user)
+    reviews = Review.objects.filter(user=user) | Review.objects.filter(
+        user__in=[el.followed_user for el in followed_users]) | Review.objects.filter(ticket__in=tickets)
     return reviews
 
-def get_users_viewable_tickets(user):
-    followed_users = UserFollows.objects.filter(user = user)
 
-    tickets = Ticket.objects.filter(user = user) | Ticket.objects.filter(user__in = [el.followed_user for el in followed_users])
+def get_users_viewable_tickets(user):
+    followed_users = UserFollows.objects.filter(user=user)
+
+    tickets = Ticket.objects.filter(user=user) | Ticket.objects.filter(
+        user__in=[el.followed_user for el in followed_users])
     return tickets
+
 
 @login_required
 def index(request):
@@ -35,7 +38,7 @@ def index(request):
 
     tickets = get_users_viewable_tickets(request.user)
     tickets = tickets.annotate(content_type=Value('TICKET', CharField()))
-    tickets = tickets.annotate(num_reviews = Count('review') )
+    tickets = tickets.annotate(num_reviews=Count('review'))
 
     posts = sorted(
         chain(reviews, tickets),
@@ -49,8 +52,9 @@ def index(request):
     page_obj = paginator.get_page(page)
 
     # context = {'posts':posts, 'current_page':'flux'}
-    context = {'page_obj':page_obj, 'current_page':'flux'}
+    context = {'page_obj': page_obj, 'current_page': 'flux'}
     return render(request, 'flux/index.html', context)
+
 
 @login_required
 def create_ticket(request):
@@ -62,11 +66,11 @@ def create_ticket(request):
             description = form.cleaned_data["description"]
             image = form.cleaned_data["image"]
 
-            ticket = Ticket.objects.create(
-                title = title,
-                description = description,
-                image = image,
-                user = request.user
+            Ticket.objects.create(
+                title=title,
+                description=description,
+                image=image,
+                user=request.user
             )
 
         return redirect('flux')
@@ -75,28 +79,24 @@ def create_ticket(request):
     context = {'form': form}
     return render(request, 'flux/create_ticket.html', context)
 
+
 @login_required
 def create_review(request, ticket_id):
     if request.method == 'POST':
         form = ReviewForm(request.POST)
 
-        # if form.is_valid():
-        review = Review.objects.create(
-            ticket = Ticket.objects.get(pk = ticket_id),
-            rating = request.POST['rating'],
-            user = request.user,
-            headline = request.POST["headline"],
-            body = request.POST["body"]
-            )
+        Review.objects.create(
+            ticket=Ticket.objects.get(pk=ticket_id),
+            rating=request.POST['rating'],
+            user=request.user,
+            headline=request.POST["headline"],
+            body=request.POST["body"])
 
-
-        # else:
-        #     print('invalid data')
         return redirect('flux')
 
-    ticket = Ticket.objects.get(pk = ticket_id)
+    ticket = Ticket.objects.get(pk=ticket_id)
     form = ReviewForm()
-    context = {'ticket' : ticket, 'form' : form}
+    context = {'ticket': ticket, 'form': form}
     return render(request, 'flux/create_review.html', context)
 
 
@@ -110,17 +110,17 @@ def create_ticket_and_review(request):
         review_form = ReviewForm(request.POST)
         if all([ticket_form.is_valid(), review_form.is_valid()]):
             ticket = Ticket.objects.create(
-                title = ticket_form.cleaned_data['title'],
-                description = ticket_form.cleaned_data['description'],
-                image = ticket_form.cleaned_data['image'],
-                user = request.user
+                title=ticket_form.cleaned_data['title'],
+                description=ticket_form.cleaned_data['description'],
+                image=ticket_form.cleaned_data['image'],
+                user=request.user
             )
             Review.objects.create(
-            ticket = Ticket.objects.get(pk = ticket.id),
-            rating = review_form.cleaned_data['rating'],
-            user = request.user,
-            headline = review_form.cleaned_data['headline'],
-            body = review_form.cleaned_data['body']
+                ticket=Ticket.objects.get(pk=ticket.id),
+                rating=review_form.cleaned_data['rating'],
+                user=request.user,
+                headline=review_form.cleaned_data['headline'],
+                body=review_form.cleaned_data['body']
             )
             return redirect('flux')
         return redirect('create_ticket_and_review')
@@ -131,23 +131,23 @@ def create_ticket_and_review(request):
     return render(request, 'flux/create_ticket_and_review.html', context=context)
 
 
-
-class TicketsListView(LoginRequiredMixin,generic.ListView):
+class TicketsListView(LoginRequiredMixin, generic.ListView):
     template_name = 'flux/posts_list.html'
     model = Ticket
 
     def get(self, request):
-        tickets = Ticket.objects.filter(user = request.user.id)
+        tickets = Ticket.objects.filter(user=request.user.id)
         tickets = tickets.annotate(content_type=Value('TICKET', CharField()))
-        reviews = Review.objects.filter(user = request.user.id)
+        reviews = Review.objects.filter(user=request.user.id)
         reviews = reviews.annotate(content_type=Value('REVIEW', CharField()))
         posts = sorted(
-        chain(reviews, tickets),
-        key=lambda post: post.time_created,
-        reverse=True
+            chain(reviews, tickets),
+            key=lambda post: post.time_created,
+            reverse=True
         )
-        context = {'posts':posts, 'current_page':'posts'}
+        context = {'posts': posts, 'current_page': 'posts'}
         return render(request, self.template_name, context)
+
 
 class TicketDetailView(LoginRequiredMixin, generic.UpdateView):
     model = Ticket
@@ -159,7 +159,7 @@ class TicketDetailView(LoginRequiredMixin, generic.UpdateView):
         ticket = get_object_or_404(Ticket, pk=pk)
         if request.user == ticket.user:
             return super().get(self, request, pk)
-        else :
+        else:
             raise PermissionDenied
 
     # def form_valid(self, form):
@@ -178,11 +178,12 @@ class ReviewDetailView(LoginRequiredMixin, generic.UpdateView):
         review = get_object_or_404(Review, pk=pk)
         if request.user == review.user:
             return super().get(self, request, pk)
-        else :
+        else:
             raise PermissionDenied
 
     # def form_valid(self, form):
     #     return super().form_valid(form)
+
 
 class TicketDeleteView(LoginRequiredMixin, generic.DeleteView):
     model = Ticket
@@ -192,7 +193,7 @@ class TicketDeleteView(LoginRequiredMixin, generic.DeleteView):
         ticket = get_object_or_404(Ticket, pk=pk)
         if request.user == ticket.user:
             return super().get(self, request, pk)
-        else :
+        else:
             raise PermissionDenied
 
 
@@ -204,7 +205,7 @@ class ReviewDeleteView(LoginRequiredMixin, generic.DeleteView):
         review = get_object_or_404(Review, pk=pk)
         if request.user == review.user:
             return super().get(self, request, pk)
-        else :
+        else:
             raise PermissionDenied
 
 
@@ -216,22 +217,23 @@ def abonnements(request):
         try:
             user = get_object_or_404(User, username=name)
             UserFollows.objects.create(
-                user = request.user,
-                followed_user = user,
+                user=request.user,
+                followed_user=user,
             )
         except User.DoesNotExist:
             raise Http404("No MyModel matches the given query.")
 
-
     form = AbonnementsForm
-    followed_users = UserFollows.objects.filter(user = request.user.id)
-    followers = UserFollows.objects.filter(followed_user = request.user.id)
-    context = {'form':form, 'followed_users':followed_users, 'followers':followers, 'current_page':'abonnements'}
+    followed_users = UserFollows.objects.filter(user=request.user.id)
+    followers = UserFollows.objects.filter(followed_user=request.user.id)
+    context = {'form': form, 'followed_users': followed_users, 'followers': followers, 'current_page': 'abonnements'}
     return render(request, 'flux/abonnements.html', context)
+
 
 class UnsubscribeView(LoginRequiredMixin, generic.DeleteView):
     model = UserFollows
     success_url = ('/flux/abonnements')
+
 
 def logout_view(request):
     logout(request)

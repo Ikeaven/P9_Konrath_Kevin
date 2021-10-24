@@ -1,16 +1,6 @@
 from django import forms
-from django.forms import fields
-from .models import Review, Ticket, UserFollows
+from .models import Review, Ticket
 
-# class CritiqueRequestForm(forms.Form):
-#     title = forms.CharField(label='Titre', max_length=128, widget=forms.TextInput(attrs={'class': 'form-control my-3'}))
-#     description = forms.CharField(label='Descritpion', max_length=2048, widget=forms.Textarea(attrs={'class': 'form-control my-3'}))
-#     image = forms.ImageField(label='Image', required=False, widget=forms.FileInput(attrs={'class': 'm-4'}))
-
-#     def __init__(self, *args, **kwargs):
-#         super(CritiqueRequestForm, self).__init__(*args, **kwargs)
-#         for visible in self.visible_fields():
-#             visible.field.widget.attrs['class'] = 'form-control'
 
 class CritiqueRequestForm(forms.ModelForm):
 
@@ -19,9 +9,9 @@ class CritiqueRequestForm(forms.ModelForm):
         fields = ['title', 'description', 'image']
 
     def __init__(self, *args, **kwargs):
-            super(CritiqueRequestForm, self).__init__(*args, **kwargs)
-            for visible in self.visible_fields():
-                visible.field.widget.attrs['class'] = 'form-control'
+        super(CritiqueRequestForm, self).__init__(*args, **kwargs)
+        for visible in self.visible_fields():
+            visible.field.widget.attrs['class'] = 'form-control'
 
 
 class ReviewRequestForm(forms.ModelForm):
@@ -34,21 +24,30 @@ class ReviewRequestForm(forms.ModelForm):
         for visible in self.visible_fields():
             if visible.name == 'rating':
                 RATING_CHOICES = [('1', '1'), ('2', '2'), ('3', '3'), ('4', '4'), ('5', '5')]
-                visible.field = forms.ChoiceField(choices=RATING_CHOICES, widget=forms.RadioSelect(attrs={'class':'form-check form-check-inline'}))
+                visible.field = forms.ChoiceField(choices=RATING_CHOICES, widget=forms.RadioSelect(
+                    attrs={'class': 'form-check form-check-inline'}))
             elif visible.name == 'headline':
                 visible.field = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control my-3'}))
             else:
                 visible.field = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control my-3'}))
 
 
-
-
 RATING_CHOICES = [('1', '1'), ('2', '2'), ('3', '3'), ('4', '4'), ('5', '5')]
 
+
 class ReviewForm(forms.Form):
-    headline = forms.CharField(label='Titre', max_length=128, widget=forms.TextInput(attrs={'class': 'form-control my-3'}))
-    rating = forms.ChoiceField(label='Notes', choices=RATING_CHOICES, widget=forms.RadioSelect(attrs={'class':'form-check form-check-inline'}))
-    body = forms.CharField(label='Commentaire', max_length=8192, widget=forms.Textarea(attrs={'class': 'form-control my-3'}))
+    headline = forms.CharField(
+        label='Titre',
+        max_length=128,
+        widget=forms.TextInput(attrs={'class': 'form-control my-3'}))
+    rating = forms.ChoiceField(
+        label='Notes',
+        choices=RATING_CHOICES,
+        widget=forms.RadioSelect(attrs={'class': 'form-check form-check-inline'}))
+    body = forms.CharField(
+        label='Commentaire',
+        max_length=8192,
+        widget=forms.Textarea(attrs={'class': 'form-control my-3'}))
 
 
 class AbonnementsForm(forms.Form):

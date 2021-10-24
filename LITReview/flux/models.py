@@ -1,9 +1,10 @@
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.conf import settings
 from django.db import models
-from django.db.models.deletion import CASCADE
+# from django.db.models.deletion import CASCADE
 
 from PIL import Image
+
 
 class Ticket(models.Model):
     # Your Ticket model definition goes here
@@ -25,17 +26,20 @@ class Ticket(models.Model):
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-        if self.image != None:
+        if self.image is not None and self.image.name != '':
             self.resize_image()
+        else:
+            self.image = None
+
 
 class Review(models.Model):
     ticket = models.ForeignKey(to=Ticket, on_delete=models.CASCADE)
     rating = models.PositiveSmallIntegerField(
         # validates that rating must be between 0 and 5
         validators=[MinValueValidator(0), MaxValueValidator(5)],
-        verbose_name = "Notes")
-    headline = models.CharField(max_length=128, verbose_name = "Titre")
-    body = models.CharField(max_length=8192, blank=True, verbose_name = "Commentaire")
+        verbose_name="Notes")
+    headline = models.CharField(max_length=128, verbose_name="Titre")
+    body = models.CharField(max_length=8192, blank=True, verbose_name="Commentaire")
     user = models.ForeignKey(
         to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     time_created = models.DateTimeField(auto_now_add=True)
@@ -43,8 +47,14 @@ class Review(models.Model):
 
 class UserFollows(models.Model):
     # Your UserFollows model definition goes here
-    user = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='following')
-    followed_user = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='followed_by')
+    user = models.ForeignKey(
+        to=settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='following')
+    followed_user = models.ForeignKey(
+        to=settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='followed_by')
 
     class Meta:
         # ensures we don't get multiple UserFollows instances

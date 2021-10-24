@@ -1,7 +1,6 @@
 from django.shortcuts import render, redirect
 from .models import User
 from django.contrib.auth.hashers import make_password
-from django.urls import reverse
 from django.contrib.auth import authenticate, login
 
 from .forms import DivErrorList, InscriptionForm
@@ -27,8 +26,8 @@ def inscription(request):
                 user = User.objects.filter(username=username)
                 if not user.exists():
                     user = User.objects.create(
-                        username = username,
-                        password = make_password(password, 'salt', 'default')
+                        username=username,
+                        password=make_password(password, 'salt', 'default')
                     )
                     return redirect('accueil')
                 else:
@@ -49,5 +48,5 @@ def connexion(request):
             login(request, user)
             return redirect('flux')
         else:
-            context = {'error':True}
+            context = {'error': True}
             return render(request, 'accueil/index.html', context)

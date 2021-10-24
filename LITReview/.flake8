@@ -1,0 +1,4 @@
+[flake8]
+
+exclude = env, __pycache__, ./flux/migrations/, ./accueil/migrations/
+max-line-length=119
