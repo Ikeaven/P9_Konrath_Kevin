@@ -1,4 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.core.exceptions import PermissionDenied
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.db.models.query import EmptyQuerySet
 from django.http.response import Http404
 from django.shortcuts import render, redirect, get_object_or_404
@@ -146,10 +148,17 @@ class TicketDetailView(LoginRequiredMixin, generic.UpdateView):
     form_class = CritiqueRequestForm
     success_url = '/flux/posts'
 
-    def form_valid(self, form):
-        # This method is called when valid form data has been POSTed.
-        # It should return an HttpResponse.
-        return super().form_valid(form)
+    def get(self, request, pk):
+        ticket = get_object_or_404(Ticket, pk=pk)
+        if request.user == ticket.user:
+            return super().get(self, request, pk)
+        else :
+            raise PermissionDenied
+
+    # def form_valid(self, form):
+    #     # This method is called when valid form data has been POSTed.
+    #     # It should return an HttpResponse.
+    #     return super().form_valid(form)
 
 
 class ReviewDetailView(LoginRequiredMixin, generic.UpdateView):
@@ -158,16 +167,39 @@ class ReviewDetailView(LoginRequiredMixin, generic.UpdateView):
     form_class = ReviewRequestForm
     success_url = '/flux/posts'
 
-    def form_valid(self, form):
-        return super().form_valid(form)
+    def get(self, request, pk):
+        review = get_object_or_404(Review, pk=pk)
+        if request.user == review.user:
+            return super().get(self, request, pk)
+        else :
+            raise PermissionDenied
+
+    # def form_valid(self, form):
+    #     return super().form_valid(form)
 
 class TicketDeleteView(LoginRequiredMixin, generic.DeleteView):
     model = Ticket
     success_url = ('/flux/posts')
 
+    def get(self, request, pk):
+        ticket = get_object_or_404(Ticket, pk=pk)
+        if request.user == ticket.user:
+            return super().get(self, request, pk)
+        else :
+            raise PermissionDenied
+
+
 class ReviewDeleteView(LoginRequiredMixin, generic.DeleteView):
     model = Review
     success_url = ('/flux/posts')
+
+    def get(self, request, pk):
+        review = get_object_or_404(Review, pk=pk)
+        if request.user == review.user:
+            return super().get(self, request, pk)
+        else :
+            raise PermissionDenied
+
 
 @login_required
 def abonnements(request):

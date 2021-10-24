@@ -11,11 +11,11 @@
 function checkPassword(){
   if (document.getElementById('id_password').value == document.getElementById('id_verify_password').value) {
     document.getElementById('message').style.color = 'green';
-    document.getElementById('message').innerHTML = 'matching';
+    document.getElementById('message').innerHTML = 'Les mots de passes correspondent';
     document.getElementById('inscriptio-submit').disabled = false;
   } else {
     document.getElementById('message').style.color = 'red';
-    document.getElementById('message').innerHTML = 'not matching';
+    document.getElementById('message').innerHTML = 'les mots de passe ne correspondent pas';
     document.getElementById('inscriptio-submit').disabled = true;
 
   }
