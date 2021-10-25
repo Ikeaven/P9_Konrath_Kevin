@@ -6,10 +6,12 @@
 <div class="container my-5">
     <div class="row">
         <div class="col-6">
-            <a name="" id="" class="btn btn-primary" href={% url 'create_ticket' %} role="button">Demander une critique</a>
+            <a name="" id="" class="btn btn-primary" href={% url 'create_ticket' %} role="button">Demander une
+                critique</a>
         </div>
         <div class="col-6 d-flex justify-content-end">
-            <a name="" id="" class="btn btn-primary" href={% url 'create_ticket_and_review' %} role="button">Créer une critique</a>
+            <a name="" id="" class="btn btn-primary" href={% url 'create_ticket_and_review' %} role="button">Créer une
+                critique</a>
         </div>
     </div>
 </div>
@@ -18,25 +20,26 @@
     <div class="row">
         <div class="col-12">
             {% for post in page_obj %}
-                {% if post.content_type == 'TICKET' %}
-                    <div class="my-2">
-                        {% include 'flux/ticket_snippet.html' with ticket=post %}
-                    </div>
-                {% elif post.content_type == 'REVIEW' %}
-                    <div class="my-2">
-                        {% include 'flux/review_snippet.html' with review=post %}
-                    </div>
-                {% endif%}
+            {% if post.content_type == 'TICKET' %}
+            <div class="my-2">
+                {% include 'flux/ticket_snippet.html' with ticket=post %}
+            </div>
+            {% elif post.content_type == 'REVIEW' %}
+            <div class="my-2">
+                {% include 'flux/review_snippet.html' with review=post %}
+            </div>
+            {% endif%}
             {% endfor %}
         </div>
     </div>
 </div>
 
+{% if page_obj.paginator.num_pages > 1 %}
 <div class="container my-5 d-flex justify-content-center ">
     <span>
         {% if page_obj.has_previous %}
-            <a href="?page=1">« première</a>
-            <a href="?page={{ page_obj.previous_page_number }}">précédente</a>
+        <a href="?page=1">« première</a>
+        <a href="?page={{ page_obj.previous_page_number }}">précédente</a>
         {% endif %}
 
         <span>
@@ -44,12 +47,15 @@
 
         </span>
         {% if page_obj.has_next %}
-            <a href="?page={{ page_obj.next_page_number }}">suivante</a>
+        <a href="?page={{ page_obj.next_page_number }}">suivante</a>
 
-            <a href="?page={{ page_obj.paginator.num_pages }}">dernière »</a>
+        <a href="?page={{ page_obj.paginator.num_pages }}">dernière »</a>
         {% endif %}
     </span>
 </div>
+{% endif %}
+
+
 
 
 {% load static %}

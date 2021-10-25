@@ -26,7 +26,7 @@ class Ticket(models.Model):
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-        if self.image is not None and self.image.name != '':
+        if self.image:
             self.resize_image()
         else:
             self.image = None
