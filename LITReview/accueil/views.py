@@ -29,7 +29,12 @@ def inscription(request):
                         username=username,
                         password=make_password(password, 'salt', 'default')
                     )
-                    return redirect('accueil')
+                    user = authenticate(username=request.POST['username'], password=request.POST['password'])
+                    if user is not None:
+                        login(request, user)
+                        return redirect('flux')
+                    else:
+                        return redirect('accueil')
                 else:
                     form.add_error('username', "Ce nom d'utilisateur est déjà utilisé")
                     return render(request, 'accueil/inscription.html', {'form': form})
