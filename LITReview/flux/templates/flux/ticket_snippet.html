@@ -3,7 +3,11 @@
 <div class="card">
     <div class="card-body">
         <div class="d-flex justify-content-between my-2">
+            {% if ticket.user.username == request.user.username %}
+            <span>Vous avez demandé une critique</span>
+            {% else %}
             <span>{{ticket.user.username}} a demandé une critique</span>
+            {% endif%}
             <span>{{ticket.time_created}}</span>
         </div>
 

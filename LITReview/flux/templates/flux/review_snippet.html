@@ -1,7 +1,11 @@
 <div class="card bg-light">
     <div class="card-body">
         <div class="d-flex justify-content-between">
-            <span>{{review.user.username}} à posté une critique :</span>
+            {% if review.user.username == request.user.username %}
+                <span>Vous avez posté une critique :</span>
+            {% else %}
+                <span>{{review.user.username}} à posté une critique :</span>
+            {% endif %}
             <span>{{review.time_created}}</span>
         </div>
 
