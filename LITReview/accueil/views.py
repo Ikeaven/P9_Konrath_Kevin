@@ -7,16 +7,11 @@ from .forms import DivErrorList, InscriptionForm
 
 
 def index(request):
-    """First page app"""
     context = {"error": False}
-    return render(request, 'authentication/index.html', context)
+    return render(request, 'accueil/index.html', context)
 
 
 def inscription(request):
-    """
-    Display a form to sign up
-    If the sign up is ok, user is authenticate, login and redirect to flux app
-    """
     if request.method == 'POST':
         form = InscriptionForm(request.POST, error_class=DivErrorList)
         if form.is_valid():
@@ -26,7 +21,7 @@ def inscription(request):
 
             if password != verify_password:
                 form.add_error('verify_password', "Les deux mots de passe ne sont pas identiques !")
-                return render(request, 'authentication/inscription.html', {'form': form})
+                return render(request, 'accueil/inscription.html', {'form': form})
             else:
                 user = User.objects.filter(username=username)
                 if not user.exists():
@@ -39,20 +34,19 @@ def inscription(request):
                         login(request, user)
                         return redirect('flux')
                     else:
-                        return redirect('authentication')
+                        return redirect('accueil')
                 else:
                     form.add_error('username', "Ce nom d'utilisateur est déjà utilisé")
-                    return render(request, 'authentication/inscription.html', {'form': form})
+                    return render(request, 'accueil/inscription.html', {'form': form})
 
         else:
-            return render(request, 'authentication/inscription.html', {'form': form})
+            return render(request, 'accueil/inscription.html', {'form': form})
     else:
         form = InscriptionForm(error_class=DivErrorList)
-    return render(request, 'authentication/inscription.html', {'form': form})
+    return render(request, 'accueil/inscription.html', {'form': form})
 
 
 def connexion(request):
-    """Sign in"""
     if request.method == 'POST':
         user = authenticate(username=request.POST['name'], password=request.POST['password'])
         if user is not None:
@@ -60,4 +54,4 @@ def connexion(request):
             return redirect('flux')
         else:
             context = {'error': True}
-            return render(request, 'authentication/index.html', context)
+            return render(request, 'accueil/index.html', context)

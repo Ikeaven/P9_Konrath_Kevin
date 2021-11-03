@@ -12,20 +12,12 @@ from django.contrib.auth import logout
 from django.db.models import CharField, Value, Count
 from django.views import generic
 
-from authentication.models import User
+from accueil.models import User
 from .models import Ticket, Review, UserFollows
 from .forms import CritiqueRequestForm, ReviewForm, AbonnementsForm, ReviewRequestForm
 
 
 def get_users_viewable_reviews(user):
-    """
-    Select reviews viewable for the user
-    review is viewable if it is:
-        - his own reviews
-        - his own ticket's reviews
-        - followed user's review
-    return reviews
-    """
     followed_users = UserFollows.objects.filter(user=user)
     tickets = Ticket.objects.filter(user=user)
     reviews = Review.objects.filter(user=user) | Review.objects.filter(
@@ -34,14 +26,8 @@ def get_users_viewable_reviews(user):
 
 
 def get_users_viewable_tickets(user):
-    """
-    Select tickets viewable for the user
-    Ticket is viewable if it is:
-        - user own ticket
-        - followed user's ticket
-    return tickets
-    """
     followed_users = UserFollows.objects.filter(user=user)
+
     tickets = Ticket.objects.filter(user=user) | Ticket.objects.filter(
         user__in=[el.followed_user for el in followed_users])
     return tickets
@@ -49,10 +35,6 @@ def get_users_viewable_tickets(user):
 
 @login_required
 def index(request):
-    """
-    First page app
-    Display a list of tickets and reviews
-    """
     reviews = get_users_viewable_reviews(request.user)
     reviews = reviews.annotate(content_type=Value('REVIEW', CharField()))
 
@@ -78,7 +60,6 @@ def index(request):
 
 @login_required
 def create_ticket(request):
-    """Display a form to create a ticket."""
     if request.method == 'POST':
         form = CritiqueRequestForm(request.POST, request.FILES)
         if form.is_valid():
@@ -103,7 +84,6 @@ def create_ticket(request):
 
 @login_required
 def create_review(request, ticket_id):
-    """Display a ticket and a form to create a review of it."""
     if request.method == 'POST':
         form = ReviewForm(request.POST)
 
@@ -124,7 +104,6 @@ def create_review(request, ticket_id):
 
 @login_required
 def create_ticket_and_review(request):
-    """Display a form to create ticket and review in one step."""
     ticket_form = CritiqueRequestForm()
     review_form = ReviewForm()
 
@@ -155,7 +134,6 @@ def create_ticket_and_review(request):
 
 
 class TicketsListView(LoginRequiredMixin, generic.ListView):
-    """Display list of user's tickets and reviews."""
     template_name = 'flux/posts_list.html'
     model = Ticket
 
@@ -174,7 +152,6 @@ class TicketsListView(LoginRequiredMixin, generic.ListView):
 
 
 class TicketDetailView(LoginRequiredMixin, generic.UpdateView):
-    """Display a pre-filled form regarding the selected ticket."""
     model = Ticket
     template_name = 'flux/detail_ticket.html'
     form_class = CritiqueRequestForm
@@ -187,9 +164,13 @@ class TicketDetailView(LoginRequiredMixin, generic.UpdateView):
         else:
             raise PermissionDenied
 
+    # def form_valid(self, form):
+    #     # This method is called when valid form data has been POSTed.
+    #     # It should return an HttpResponse.
+    #     return super().form_valid(form)
+
 
 class ReviewDetailView(LoginRequiredMixin, generic.UpdateView):
-    """Display a pre-filled form regarding the selected review."""
     model = Review
     template_name = 'flux/detail_review.html'
     form_class = ReviewRequestForm
@@ -202,9 +183,11 @@ class ReviewDetailView(LoginRequiredMixin, generic.UpdateView):
         else:
             raise PermissionDenied
 
+    # def form_valid(self, form):
+    #     return super().form_valid(form)
+
 
 class TicketDeleteView(LoginRequiredMixin, generic.DeleteView):
-    """Delete the selected ticket and the associated image if it exists."""
     model = Ticket
     success_url = ('/flux/posts')
 
@@ -223,8 +206,10 @@ class TicketDeleteView(LoginRequiredMixin, generic.DeleteView):
         return super().delete(self, *args, **kwargs)
 
 
+
+
+
 class ReviewDeleteView(LoginRequiredMixin, generic.DeleteView):
-    """Delete the selected review."""
     model = Review
     success_url = ('/flux/posts')
 
@@ -238,11 +223,8 @@ class ReviewDeleteView(LoginRequiredMixin, generic.DeleteView):
 
 @login_required
 def abonnements(request):
-    """Display a form to follow other users, and display two lists :
-     - followers
-     - followed_users
-     """
     if request.method == 'POST':
+        # form = AbonnementsForm(request.POST)
         name = request.POST['name']
         try:
             user = get_object_or_404(User, username=name)
@@ -261,12 +243,10 @@ def abonnements(request):
 
 
 class UnsubscribeView(LoginRequiredMixin, generic.DeleteView):
-    """Display a validation form to delete the selected subscription."""
     model = UserFollows
     success_url = ('/flux/abonnements')
 
 
 def logout_view(request):
-    """User logout."""
     logout(request)
-    return redirect('authentication')
+    return redirect('accueil')
