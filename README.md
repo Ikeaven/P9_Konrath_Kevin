@@ -19,8 +19,14 @@ Se déplacer dans le repertoire du projet :
 
     $ python3 -m venv env
 
+
+Sous macOS ou Linux :
+
     $ . env/bin/activate
 
+Sous Windows :
+
+    $ env\Scripts\activate.bat
 ## 3. Installer les dépendances :
 
     $ pip install -r requirements.txt
