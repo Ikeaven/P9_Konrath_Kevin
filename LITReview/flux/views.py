@@ -1,3 +1,5 @@
+import os
+
 from itertools import chain
 
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -195,6 +197,16 @@ class TicketDeleteView(LoginRequiredMixin, generic.DeleteView):
             return super().get(self, request, pk)
         else:
             raise PermissionDenied
+
+    def delete(self, request, pk, *args, **kwargs):
+        ticket = get_object_or_404(Ticket, pk=pk)
+        if request.user == ticket.user:
+            if os.path.exists(ticket.image.path):
+                os.remove(ticket.image.path)
+        return super().delete(self, *args, **kwargs)
+
+
+
 
 
 class ReviewDeleteView(LoginRequiredMixin, generic.DeleteView):
