@@ -3,7 +3,6 @@ from .models import Review, Ticket
 
 
 class CritiqueRequestForm(forms.ModelForm):
-
     class Meta:
         model = Ticket
         fields = ['title', 'description', 'image']

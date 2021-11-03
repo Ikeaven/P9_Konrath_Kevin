@@ -32,7 +32,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'accueil.apps.AccueilConfig',
+    'authentication.apps.AuthenticationConfig',
     'flux.apps.FluxConfig',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -129,4 +129,4 @@ LOGIN_URL = 'accueil'
 MEDIA_ROOT = "../"
 
 # Model USER
-AUTH_USER_MODEL = 'accueil.User'
+AUTH_USER_MODEL = 'authentication.User'

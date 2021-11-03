@@ -3,9 +3,9 @@ from django.urls import path
 
 from . import views
 
-# app_name = 'accueil'
+# app_name = 'authentication'
 urlpatterns = [
-    path('', views.index, name='accueil'),
+    path('', views.index, name='authentication'),
     path('inscription/', views.inscription, name='inscription'),
     path('connexion/', views.connexion, name='connexion'),
 ]
