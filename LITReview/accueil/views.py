@@ -7,11 +7,16 @@ from .forms import DivErrorList, InscriptionForm
 
 
 def index(request):
+    """First page app"""
     context = {"error": False}
     return render(request, 'accueil/index.html', context)
 
 
 def inscription(request):
+    """
+        Display a form to sign up
+        If the sign up is ok, user is authenticate, login and redirect to flux app
+    """
     if request.method == 'POST':
         form = InscriptionForm(request.POST, error_class=DivErrorList)
         if form.is_valid():
@@ -47,6 +52,7 @@ def inscription(request):
 
 
 def connexion(request):
+    """Sign in"""
     if request.method == 'POST':
         user = authenticate(username=request.POST['name'], password=request.POST['password'])
         if user is not None:
